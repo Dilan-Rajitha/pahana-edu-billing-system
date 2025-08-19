@@ -42,14 +42,11 @@ public class LoginServlet extends HttpServlet {
             s.setAttribute("user", u);
             s.setAttribute("role", role);
 
-            // ✅ LOGIN success → write log
             LogService logService = new LogServiceImpl();
             logService.log(req, "LOGIN", "USER", null);
 
             resp.sendRedirect(req.getContextPath() + "/dashboard");
         } else {
-            // (optional) LOGIN_FAIL log (see tweak in LogServiceImpl below)
-            // new LogServiceImpl().log(req, "LOGIN_FAIL", "USER", null);
 
             req.setAttribute("error", "Invalid username or password");
             req.setAttribute("username", u);

@@ -25,11 +25,10 @@ public class AuthFilter implements Filter {
     String role = (session == null) ? null : (String) session.getAttribute("role");
     boolean logged = (role != null);
 
-    // allow exact-public and common static/view folders (you keep JSPs outside WEB-INF)
     boolean isPublicExact = PUBLIC_EXACT.contains(path);
     boolean isStatic = path.startsWith("/assets/") || path.startsWith("/css/")
                     || path.startsWith("/js/") || path.startsWith("/images/");
-    boolean isLoginView = path.startsWith("/views/auth/"); // allow login JSP direct if needed
+    boolean isLoginView = path.startsWith("/views/auth/"); 
 
     if (isPublicExact || isStatic || isLoginView) {
       chain.doFilter(req, res);
@@ -41,7 +40,7 @@ public class AuthFilter implements Filter {
       return;
     }
 
-    // ADMIN-only area (/admin/*)
+    // ADMIN-only
     if (path.startsWith("/admin/") && !"ADMIN".equals(role)) {
       w.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins only");
       return;

@@ -52,21 +52,6 @@ public class ItemDAOImpl implements ItemDAO {
         }
     }
 
-//    @Override
-//    public boolean deleteById(Long id) {
-//        String sql = "DELETE FROM items WHERE id=?";
-//        try (Connection con = cf.getConnection();
-//             PreparedStatement ps = con.prepareStatement(sql)) {
-//            ps.setLong(1, id);
-//            return ps.executeUpdate() == 1;
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Item delete failed", e);
-//        }
-//    }
-    
-    
-    // new start 
-    
     @Override
     public boolean deleteById(Long id) {
         String delChildren = "DELETE FROM bill_items WHERE item_id=?";
@@ -93,7 +78,6 @@ public class ItemDAOImpl implements ItemDAO {
         }
     }
     
-    // new end 
 
     @Override
     public Optional<Item> findById(Long id) {
@@ -138,8 +122,6 @@ public class ItemDAOImpl implements ItemDAO {
     
     
     
-    
-    //new
 
     @Override
     public List<Item> search(String nameLike, Long id, String category) {

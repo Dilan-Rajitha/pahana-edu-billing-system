@@ -83,13 +83,11 @@ public class ItemServlet extends HttpServlet {
                 Long id = parseId(req.getParameter("id"));
                 if (id == null) { resp.sendError(400, "Missing/invalid id"); return; }
 
-                // (optional) remove old image file too
                 String oldImg = service.byId(id).map(Item::getImage).orElse(null);
 
                 service.delete(id);
                 safeLog(req, "ITEM_DELETE", "ITEM", id);
 
-                // optional: delete file from disk
                 if (oldImg != null && !oldImg.isBlank()) {
                     try {
                         String absPath = getServletContext().getRealPath(oldImg);
@@ -100,7 +98,6 @@ public class ItemServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/items");
 
             } else {
-                // SEARCH / FILTER
                 String qName = t(req.getParameter("qName"));
                 Long qId = parseId(req.getParameter("qId"));
                 String qCat = t(req.getParameter("qCategory"));
