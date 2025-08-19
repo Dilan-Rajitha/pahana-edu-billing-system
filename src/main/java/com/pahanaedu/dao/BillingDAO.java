@@ -22,14 +22,12 @@ public interface BillingDAO {
     Optional<Bill> findBill(Long id);
     List<BillItem> findBillItems(Long billId);
     
-    
-    // New For reports
+  
     List<Bill> getTodaySales();
     List<Bill> getLast7DaysSales();
     List<Bill> getLast30DaysSales();
     List<Bill> getAllTimeSales();
     
     
- // today sales filtered by staff username
     List<Bill> getTodaySalesByStaff(String staffUser);
 }
