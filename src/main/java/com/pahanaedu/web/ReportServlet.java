@@ -28,10 +28,10 @@ public class ReportServlet extends HttpServlet {
             throws ServletException, IOException {
         
         try {
-            // Get date range parameter
+            // Get date range 
             String dateRange = req.getParameter("dateRange");
             if (dateRange == null || dateRange.trim().isEmpty()) {
-                dateRange = "allTime"; // Default value
+                dateRange = "allTime";
             }
             
             System.out.println("Processing report request for dateRange: " + dateRange);
