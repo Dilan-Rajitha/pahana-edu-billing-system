@@ -19,18 +19,10 @@ public class CustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // optional auth guard (uncomment if needed)
-        // HttpSession s = req.getSession(false);
-        // if (s == null || s.getAttribute("user") == null) {
-        //     resp.sendRedirect(req.getContextPath() + "/login");
-        //     return;
-        // }
-
         String action = req.getParameter("action");
 
         try {
             if ("new".equalsIgnoreCase(action)) {
-                // show empty form with next account number
                 req.setAttribute("nextAcc", service.nextAccountNumber());
                 req.getRequestDispatcher("/views/customers/form.jsp").forward(req, resp);
 
