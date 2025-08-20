@@ -1,8 +1,10 @@
 package com.pahanaedu.dao.impl;
+
 import com.pahanaedu.dao.UserDAO;
 import com.pahanaedu.model.User;
 import com.pahanaedu.util.ConnectionFactory;
-import java.sql.*; import java.util.*;
+import java.sql.*; 
+import java.util.*;
 
 public class UserDAOImpl implements UserDAO {
   private final ConnectionFactory cf = ConnectionFactory.getInstance();
@@ -25,18 +27,45 @@ public class UserDAOImpl implements UserDAO {
     }catch(SQLException e){ throw new RuntimeException("Find user failed",e); }
   }
 
-  @Override public User save(User u){
-    String sql="INSERT INTO users(username,password_hash,role) VALUES(?,?,?)";
-    try(Connection con=cf.getConnection();
-        PreparedStatement ps=con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-      ps.setString(1,u.getUsername());
-      ps.setString(2,u.getPasswordHash());
-      ps.setString(3,u.getRole());
-      ps.executeUpdate();
-      try(ResultSet rs=ps.getGeneratedKeys()){ if(rs.next()) u.setId(rs.getLong(1)); }
-      return u;
-    }catch(SQLException e){ throw new RuntimeException("Save user failed",e); }
+  //Old one befor the same username error
+//  @Override public User save(User u){
+//    String sql="INSERT INTO users(username,password_hash,role) VALUES(?,?,?)";
+//    try(Connection con=cf.getConnection();
+//        PreparedStatement ps=con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+//      ps.setString(1,u.getUsername());
+//      ps.setString(2,u.getPasswordHash());
+//      ps.setString(3,u.getRole());
+//      ps.executeUpdate();
+//      try(ResultSet rs=ps.getGeneratedKeys()){ if(rs.next()) u.setId(rs.getLong(1)); }
+//      return u;
+//    }catch(SQLException e){ throw new RuntimeException("Save user failed",e); }
+//  }
+  
+//new one after the same username error
+  @Override
+  public User save(User u) {
+      String sql = "INSERT INTO users(username, password_hash, role) VALUES(?, ?, ?)";
+      try (Connection con = cf.getConnection(); 
+           PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+          
+          ps.setString(1, u.getUsername());
+          ps.setString(2, u.getPasswordHash());
+          ps.setString(3, u.getRole());
+          
+          ps.executeUpdate();
+          
+          try (ResultSet rs = ps.getGeneratedKeys()) {
+              if (rs.next()) u.setId(rs.getLong(1));
+          }
+          return u;
+          
+      } catch (SQLIntegrityConstraintViolationException e) {
+          throw new RuntimeException("Username already exists. Please choose another one.", e);
+      } catch (SQLException e) {
+          throw new RuntimeException("Save user failed", e);
+      }
   }
+
 
   @Override public List<User> findAll(){
     List<User> list=new ArrayList<>();

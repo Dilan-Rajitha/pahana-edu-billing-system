@@ -25,7 +25,7 @@ public class BillingServlet extends HttpServlet {
     private final ItemDAO itemDAO = new ItemDAOImpl();
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
 
-    /* ----------------- helpers ----------------- */
+
     private void populateCatalog(HttpServletRequest req) {
         String q   = req.getParameter("q");
         String cat = req.getParameter("cat");
@@ -36,7 +36,6 @@ public class BillingServlet extends HttpServlet {
         req.setAttribute("q", q);
         req.setAttribute("cat", cat);
 
-        // Fetch all; JSP side filters by q + cat (simple & fast enough for now)
         req.setAttribute("allItems", itemDAO.findAll());
     }
 
@@ -79,7 +78,7 @@ public class BillingServlet extends HttpServlet {
         try { return (s == null || s.isBlank()) ? null : new BigDecimal(s); }
         catch (NumberFormatException e) { return null; }
     }
-    /* ------------------------------------------- */
+   
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -109,6 +108,141 @@ public class BillingServlet extends HttpServlet {
         }
     }
 
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+//            throws ServletException, IOException {
+//
+//        req.setCharacterEncoding("UTF-8");
+//        String action = req.getParameter("action");
+//        List<BillItem> cart = cart(req);
+//        Bill bill = draft(req);
+//
+//        try {
+//            if ("add".equalsIgnoreCase(action)) {
+//                Long itemId = parseId(req.getParameter("itemId"));
+//                Integer qty  = parseInt(req.getParameter("qty"));
+//                if (itemId == null || qty == null || qty <= 0)
+//                    throw new IllegalArgumentException("Valid item id and quantity required");
+//
+//                Item item = itemDAO.findById(itemId)
+//                        .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+//
+//                BillItem existing = null;
+//                for (BillItem bi : cart) if (bi.getItemId().equals(itemId)) { existing = bi; break; }
+//
+//                if (existing == null) {
+//                    BillItem bi = new BillItem();
+//                    bi.setItemId(item.getId());
+//                    bi.setItemName(item.getName());
+//                    bi.setUnitPrice(item.getPrice());
+//                    bi.setQuantity(qty);
+//                    cart.add(bi);
+//                } else {
+//                    existing.setQuantity(existing.getQuantity() + qty);
+//                }
+//                billing.recompute(bill);
+//
+//            } else if ("inc".equalsIgnoreCase(action) || "dec".equalsIgnoreCase(action)) {
+//                Long itemId = parseId(req.getParameter("itemId"));
+//                for (BillItem bi : cart) {
+//                    if (bi.getItemId().equals(itemId)) {
+//                        int q = bi.getQuantity() == null ? 0 : bi.getQuantity();
+//                        bi.setQuantity("inc".equalsIgnoreCase(action) ? q + 1 : Math.max(0, q - 1));
+//                        break;
+//                    }
+//                }
+//                cart.removeIf(bi -> bi.getQuantity() == 0);
+//                billing.recompute(bill);
+//
+//            } else if ("updateQty".equalsIgnoreCase(action)) {
+//                Long itemId = parseId(req.getParameter("itemId"));
+//                Integer qty = parseInt(req.getParameter("qty"));
+//                for (BillItem bi : cart) {
+//                    if (bi.getItemId().equals(itemId)) {
+//                        bi.setQuantity(qty == null ? 0 : Math.max(0, qty));
+//                        break;
+//                    }
+//                }
+//                cart.removeIf(bi -> bi.getQuantity() == 0);
+//                billing.recompute(bill);
+//
+//            } else if ("discount".equalsIgnoreCase(action)) {
+//                BigDecimal d = parseDecimal(req.getParameter("discountPercent"));
+//                bill.setDiscountPercent(d == null ? BigDecimal.ZERO : d);
+//                billing.recompute(bill);
+//
+//            } else if ("discountClear".equalsIgnoreCase(action)) {
+//                bill.setDiscountPercent(BigDecimal.ZERO);
+//                billing.recompute(bill);
+//
+//            } else if ("setCustomer".equalsIgnoreCase(action)) {
+//            
+//                String key = req.getParameter("customerKey");
+//                Optional<Customer> oc = Optional.empty();
+//
+//                if (key != null && key.matches("\\d+")) {
+//                    oc = customerDAO.findById(Long.valueOf(key));
+//                }
+//                if (oc.isEmpty() && key != null && key.toUpperCase().startsWith("PE-ACC-")) {
+//                    oc = customerDAO.findByAccount(key.trim());
+//                }
+//                if (oc.isEmpty() && key != null) {
+//                    oc = customerDAO.findByPhone(key.trim());
+//                }
+//
+//                if (oc.isPresent()) {
+//                    Customer c = oc.get();
+//                    bill.setCustomerId(c.getId());
+//                    req.getSession().setAttribute("billCustomerName", c.getName());
+//                    req.getSession().setAttribute("billCustomerObj", c);
+//                } else {
+//                    req.setAttribute("error", "Customer not found");
+//                    bill.setCustomerId(null);
+//                    req.getSession().removeAttribute("billCustomerName");
+//                    req.getSession().removeAttribute("billCustomerObj");
+//                }
+//
+//            } else if ("clearCustomer".equalsIgnoreCase(action)) {
+//                bill.setCustomerId(null);
+//                req.getSession().removeAttribute("billCustomerName");
+//                req.getSession().removeAttribute("billCustomerObj");
+//
+//            } else if ("save".equalsIgnoreCase(action)) {
+//                if (cart.isEmpty()) throw new IllegalArgumentException("Cart is empty");
+//                Object u = req.getSession().getAttribute("user");
+//                bill.setStaffUser(u == null ? "unknown" : u.toString());
+//                billing.recompute(bill);
+//
+//                Long billId = billing.save(bill, cart);
+//
+//         
+//                req.setAttribute("billId", billId);
+//                req.setAttribute("savedBill", bill);
+//                req.setAttribute("savedItems", new ArrayList<>(cart));
+//                Object custObj = req.getSession().getAttribute("billCustomerObj");
+//                if (custObj != null) req.setAttribute("savedCustomer", custObj);
+//
+//                req.getSession().removeAttribute("cart");
+//                req.getSession().removeAttribute("billDraft");
+//                req.getSession().removeAttribute("billCustomerName");
+//                req.getSession().removeAttribute("billCustomerObj");
+//
+//                req.getRequestDispatcher("/views/billing/receipt.jsp").forward(req, resp);
+//                return; 
+//            }
+//
+//            populateCatalog(req);
+//            req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
+//
+//        } catch (IllegalArgumentException ex) {
+//            req.setAttribute("error", ex.getMessage());
+//            populateCatalog(req);
+//            req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
+//        }
+//    }
+    
+    
+    // Updated code
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -128,6 +262,14 @@ public class BillingServlet extends HttpServlet {
                 Item item = itemDAO.findById(itemId)
                         .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
+                
+                if (item.getQuantity() < qty) {
+                    req.setAttribute("error", "Not enough stock available for item: " + item.getName());
+                    populateCatalog(req);
+                    req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
+                    return;
+                }
+
                 BillItem existing = null;
                 for (BillItem bi : cart) if (bi.getItemId().equals(itemId)) { existing = bi; break; }
 
@@ -143,80 +285,61 @@ public class BillingServlet extends HttpServlet {
                 }
                 billing.recompute(bill);
 
-            } else if ("inc".equalsIgnoreCase(action) || "dec".equalsIgnoreCase(action)) {
+            } else if ("inc".equalsIgnoreCase(action)) {
                 Long itemId = parseId(req.getParameter("itemId"));
                 for (BillItem bi : cart) {
                     if (bi.getItemId().equals(itemId)) {
                         int q = bi.getQuantity() == null ? 0 : bi.getQuantity();
-                        bi.setQuantity("inc".equalsIgnoreCase(action) ? q + 1 : Math.max(0, q - 1));
+                        Item item = itemDAO.findById(bi.getItemId()).orElseThrow(() -> new IllegalArgumentException("Item not found"));
+                        
+                        
+                        if (q + 1 > item.getQuantity()) {
+                            req.setAttribute("error", "Cannot increase quantity. Not enough stock for item: " + item.getName());
+                            populateCatalog(req);
+                            req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
+                            return;
+                        }
+                        bi.setQuantity(q + 1);
                         break;
                     }
                 }
                 cart.removeIf(bi -> bi.getQuantity() == 0);
                 billing.recompute(bill);
 
-            } else if ("updateQty".equalsIgnoreCase(action)) {
+            } else if ("dec".equalsIgnoreCase(action)) {
                 Long itemId = parseId(req.getParameter("itemId"));
-                Integer qty = parseInt(req.getParameter("qty"));
                 for (BillItem bi : cart) {
                     if (bi.getItemId().equals(itemId)) {
-                        bi.setQuantity(qty == null ? 0 : Math.max(0, qty));
+                        int q = bi.getQuantity() == null ? 0 : bi.getQuantity();
+                        bi.setQuantity(Math.max(0, q - 1));
                         break;
                     }
                 }
                 cart.removeIf(bi -> bi.getQuantity() == 0);
                 billing.recompute(bill);
-
-            } else if ("discount".equalsIgnoreCase(action)) {
-                BigDecimal d = parseDecimal(req.getParameter("discountPercent"));
-                bill.setDiscountPercent(d == null ? BigDecimal.ZERO : d);
-                billing.recompute(bill);
-
-            } else if ("discountClear".equalsIgnoreCase(action)) {
-                bill.setDiscountPercent(BigDecimal.ZERO);
-                billing.recompute(bill);
-
-            } else if ("setCustomer".equalsIgnoreCase(action)) {
-                // one-box lookup: ID / PE-ACC-xxxxx / phone
-                String key = req.getParameter("customerKey");
-                Optional<Customer> oc = Optional.empty();
-
-                if (key != null && key.matches("\\d+")) {
-                    oc = customerDAO.findById(Long.valueOf(key));
-                }
-                if (oc.isEmpty() && key != null && key.toUpperCase().startsWith("PE-ACC-")) {
-                    oc = customerDAO.findByAccount(key.trim());
-                }
-                if (oc.isEmpty() && key != null) {
-                    oc = customerDAO.findByPhone(key.trim());
-                }
-
-                if (oc.isPresent()) {
-                    Customer c = oc.get();
-                    bill.setCustomerId(c.getId());
-                    req.getSession().setAttribute("billCustomerName", c.getName());
-                    req.getSession().setAttribute("billCustomerObj", c);
-                } else {
-                    req.setAttribute("error", "Customer not found");
-                    bill.setCustomerId(null);
-                    req.getSession().removeAttribute("billCustomerName");
-                    req.getSession().removeAttribute("billCustomerObj");
-                }
-
-            } else if ("clearCustomer".equalsIgnoreCase(action)) {
-                bill.setCustomerId(null);
-                req.getSession().removeAttribute("billCustomerName");
-                req.getSession().removeAttribute("billCustomerObj");
 
             } else if ("save".equalsIgnoreCase(action)) {
                 if (cart.isEmpty()) throw new IllegalArgumentException("Cart is empty");
+
+                
+                for (BillItem bi : cart) {
+                    Item item = itemDAO.findById(bi.getItemId())
+                            .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+                    if (item.getQuantity() < bi.getQuantity()) {
+                        req.setAttribute("error", "Not enough stock available for item: " + item.getName());
+                        populateCatalog(req);
+                        req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
+                        return;
+                    }
+                }
+
+                
                 Object u = req.getSession().getAttribute("user");
                 bill.setStaffUser(u == null ? "unknown" : u.toString());
                 billing.recompute(bill);
 
                 Long billId = billing.save(bill, cart);
 
-                // pass to receipt + clear session
                 req.setAttribute("billId", billId);
                 req.setAttribute("savedBill", bill);
                 req.setAttribute("savedItems", new ArrayList<>(cart));
@@ -229,7 +352,7 @@ public class BillingServlet extends HttpServlet {
                 req.getSession().removeAttribute("billCustomerObj");
 
                 req.getRequestDispatcher("/views/billing/receipt.jsp").forward(req, resp);
-                return; // already forwarded
+                return;
             }
 
             populateCatalog(req);
@@ -241,4 +364,6 @@ public class BillingServlet extends HttpServlet {
             req.getRequestDispatcher("/views/billing/form.jsp").forward(req, resp);
         }
     }
+
+
 }

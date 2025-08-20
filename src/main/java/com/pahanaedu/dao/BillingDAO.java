@@ -1,14 +1,3 @@
-//package com.pahanaedu.dao;
-//
-//import com.pahanaedu.model.Bill;
-//import com.pahanaedu.model.BillItem;
-//
-//import java.util.List;
-//
-//public interface BillingDAO {
-//    Long saveBill(Bill bill, List<BillItem> items); 
-//}
-
 package com.pahanaedu.dao;
 
 import com.pahanaedu.model.Bill;
@@ -21,8 +10,7 @@ public interface BillingDAO {
 
     Optional<Bill> findBill(Long id);
     List<BillItem> findBillItems(Long billId);
-    
-    
+        
     // New For reports
     List<Bill> getTodaySales();
     List<Bill> getLast7DaysSales();
@@ -30,6 +18,6 @@ public interface BillingDAO {
     List<Bill> getAllTimeSales();
     
     
- // today sales filtered by staff username
+    // today sales filtered by staff username
     List<Bill> getTodaySalesByStaff(String staffUser);
 }

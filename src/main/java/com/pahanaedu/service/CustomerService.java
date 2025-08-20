@@ -12,11 +12,10 @@ public interface CustomerService {
     Optional<Customer> searchByAccount(String acc);
     List<Customer> all();
 
-    String nextAccountNumber(); // PE-ACC-10001, 10002...
+    String nextAccountNumber(); // PE-ACC-????
     
     
     // for search 
- // In CustomerService.java
     List<Customer> search(String keyword);
 
 }

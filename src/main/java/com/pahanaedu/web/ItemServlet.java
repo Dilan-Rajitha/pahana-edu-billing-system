@@ -22,9 +22,9 @@ import java.util.Optional;
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024) // 5MB
 public class ItemServlet extends HttpServlet {
     private final ItemService service = new ItemServiceImpl();
-    private final LogService logService = new LogServiceImpl(); // logging
+    private final LogService logService = new LogServiceImpl(); // logs
 
-    // ---- helpers for upload ----
+   
     private String saveImage(HttpServletRequest req, Part part) throws IOException {
         if (part == null || part.getSize() == 0) return null;
 
@@ -36,7 +36,7 @@ public class ItemServlet extends HttpServlet {
             throw new IllegalArgumentException("Only PNG/JPG/JPEG/WEBP allowed");
         }
 
-        String ext = lower.substring(lower.lastIndexOf('.')); // .png / .jpg ...
+        String ext = lower.substring(lower.lastIndexOf('.')); 
         String fileName = System.currentTimeMillis() + "-" + Math.abs(submitted.hashCode()) + ext;
 
         String relDir = "/images/items";
@@ -47,7 +47,7 @@ public class ItemServlet extends HttpServlet {
         try (InputStream in = part.getInputStream(); OutputStream os = new FileOutputStream(out)) {
             in.transferTo(os);
         }
-        return relDir + "/" + fileName; // save relative path
+        return relDir + "/" + fileName; // save path
     }
 
     private void safeLog(HttpServletRequest req, String action, String refType, Long refId) {
@@ -147,9 +147,9 @@ public class ItemServlet extends HttpServlet {
 
             if (blank(idStr)) {
                 if (newPath != null) i.setImage(newPath);
-                service.create(i);              // expect service to set i.id
+                service.create(i);              
 
-                // ✅ log create
+                
                 safeLog(req, "ITEM_CREATE", "ITEM", i.getId());
 
             } else {
@@ -161,7 +161,7 @@ public class ItemServlet extends HttpServlet {
                 String finalPath = (newPath != null ? newPath : existing);
                 i.setImage(finalPath);
 
-                // (optional) if new image uploaded, delete old physical file
+                
                 if (newPath != null && existing != null && !existing.isBlank() && !existing.equals(newPath)) {
                     try {
                         String abs = getServletContext().getRealPath(existing);
@@ -171,7 +171,7 @@ public class ItemServlet extends HttpServlet {
 
                 service.update(i);
 
-                // ✅ log update
+                //log update
                 safeLog(req, "ITEM_UPDATE", "ITEM", id);
             }
             resp.sendRedirect(req.getContextPath() + "/items");

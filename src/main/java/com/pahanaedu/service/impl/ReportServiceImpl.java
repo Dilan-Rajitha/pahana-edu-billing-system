@@ -13,9 +13,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<Bill> generateReport(String period) {
-        // Handle null period gracefully
+
         if (period == null || period.trim().isEmpty()) {
-            period = "allTime"; // Default to all time
+            period = "allTime"; 
         }
 
         List<Bill> reportData = new ArrayList<>();
@@ -34,8 +34,8 @@ public class ReportServiceImpl implements ReportService {
                     System.out.println("Fetching last 30 days sales...");
                     reportData = billDAO.getLast30DaysSales();
                     break;
-                case "alltime":  // Changed from "all" to "alltime" to match JSP
-                case "all":      // Keep backward compatibility
+                case "alltime": 
+                case "all":      
                     System.out.println("Fetching all time sales...");
                     reportData = billDAO.getAllTimeSales();
                     break;
@@ -50,7 +50,7 @@ public class ReportServiceImpl implements ReportService {
         } catch (Exception e) {
             System.err.println("Error generating report for period: " + period);
             e.printStackTrace();
-            // Return empty list instead of throwing exception
+ 
             return new ArrayList<>();
         }
     }

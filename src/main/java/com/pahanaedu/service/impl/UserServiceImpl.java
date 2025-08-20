@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
     public User create(String username, String password, String role) {
         User u = new User();
         u.setUsername(username);
-        u.setPasswordHash(password); // TODO: hash later
+        u.setPasswordHash(password); 
         u.setRole(role);
         return dao.save(u);
     }

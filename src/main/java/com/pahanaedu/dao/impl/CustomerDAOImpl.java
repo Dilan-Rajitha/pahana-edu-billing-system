@@ -121,7 +121,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public Integer findMaxAccountSuffix() {
-        // PE-ACC-
+        // PE-ACC
         String sql = "SELECT MAX(CAST(SUBSTRING(account_number, 8) AS UNSIGNED)) AS max_suf " +
                      "FROM customers WHERE account_number LIKE 'PE-ACC-%'";
         try (Connection con = cf.getConnection();
@@ -149,8 +149,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
     
     
-    //for count
-
+    //count
     @Override
     public int countAll() {
         String sql = "SELECT COUNT(*) FROM customers";
@@ -165,8 +164,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
     
     
-    //for customer search 
-
+    //customer search
     @Override
     public List<Customer> search(String keyword) {
         if (keyword == null || keyword.isBlank()) {

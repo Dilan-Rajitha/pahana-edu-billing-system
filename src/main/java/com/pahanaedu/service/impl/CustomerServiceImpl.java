@@ -13,9 +13,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String nextAccountNumber() {
-        Integer max = dao.findMaxAccountSuffix();   // e.g., 10037
+        Integer max = dao.findMaxAccountSuffix();   
         int next = (max == null) ? 10001 : (max + 1);
-        return String.format("PE-ACC-%05d", next);  // PE-ACC-10001
+        return String.format("PE-ACC-%05d", next);  // PE-ACC
     }
 
     @Override
@@ -41,7 +41,6 @@ public class CustomerServiceImpl implements CustomerService {
     
     
     //for search
- // In CustomerServiceImpl.java
     @Override
     public List<Customer> search(String keyword) {
         return dao.search(keyword);

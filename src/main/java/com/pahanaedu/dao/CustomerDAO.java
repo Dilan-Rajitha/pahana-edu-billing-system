@@ -9,23 +9,22 @@ public interface CustomerDAO {
     boolean update(Customer c);
     boolean deleteById(Long id);
     
- // for count
+    //for count
     int countAll();
 
 
     Optional<Customer> findById(Long id);
     Optional<Customer> findByAccount(String acc);
 
-    // find by phone
+    //find by phone
     Optional<Customer> findByPhone(String phone);
 
     List<Customer> findAll();
 
-    // for auto number generation
+    //auto number gen
     Integer findMaxAccountSuffix(); 
     
-    //for customer search
-
+    //customer search
     List<Customer> search(String keyword);
 
 }
