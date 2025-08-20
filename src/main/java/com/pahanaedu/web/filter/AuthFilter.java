@@ -40,7 +40,7 @@ public class AuthFilter implements Filter {
       return;
     }
 
-    // ADMIN-only
+    // ADMIN only
     if (path.startsWith("/admin/") && !"ADMIN".equals(role)) {
       w.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins only");
       return;

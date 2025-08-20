@@ -183,8 +183,7 @@ public class BillingDAOImpl implements BillingDAO {
     
     
     
-    // for staffuser
-
+    // for staff
     @Override
     public List<Bill> getTodaySalesByStaff(String staffUser) {
         String sql = "SELECT * FROM bills WHERE DATE(created_at)=CURDATE() AND staff_user=? ORDER BY created_at DESC";

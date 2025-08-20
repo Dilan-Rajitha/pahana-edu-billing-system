@@ -41,7 +41,7 @@
       overflow: hidden;
     }
 
-    /* Animated background elements */
+    /* Animated background */
     body::before,
     body::after {
       content: '';
@@ -76,7 +76,7 @@
       100% { transform: translate(0, 0) rotate(360deg); }
     }
 
-    /* Shell container */
+    
     .shell {
       width: min(1000px, 96vw);
       background: #fff;
@@ -89,7 +89,7 @@
       min-height: 600px;
     }
 
-    /* Left: Brand panel */
+    /* Left Brand panel */
     .brand-pane {
       background: linear-gradient(135deg, var(--brand), var(--brand-dark));
       padding: 40px;
@@ -135,7 +135,7 @@
     
     
 
-    /* Right: Form panel */
+    /* Right Form panel */
     .form-pane {
       padding: 60px 50px;
       display: flex;
@@ -231,17 +231,17 @@
       transform: translateY(-50%);
       color: var(--muted);
       cursor: pointer;
-      pointer-events: auto; /* Add this to ensure click events work */
+      pointer-events: auto; 
     }
     
-    /* Add this new class for input container */
+    
     .input-container {
       position: relative;
     }
     
-    /* Adjust padding for inputs with icons */
+    
     .input-with-icon {
-      padding-right: 45px !important; /* Make space for the icon */
+      padding-right: 45px !important; 
     }
     
     .actions {
@@ -302,7 +302,7 @@
       border-top: 1px solid #e5e7eb;
     }
 
-    /* Responsive */
+    /* Media */
     @media (max-width: 900px) {
       .shell {
         grid-template-columns: 1fr;
@@ -345,7 +345,7 @@
       
     </aside>
 
-    <!-- RIGHT: Login form -->
+    <!-- RIGHT Login form -->
     <section class="form-pane">
       <div class="card">
         <div class="card-header">

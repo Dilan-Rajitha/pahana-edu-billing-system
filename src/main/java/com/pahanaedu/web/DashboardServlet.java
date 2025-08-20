@@ -1,4 +1,3 @@
-// DashboardServlet.java
 package com.pahanaedu.web;
 
 import com.pahanaedu.dao.BillingDAO;
@@ -40,7 +39,7 @@ public class DashboardServlet extends HttpServlet {
     try { req.setAttribute("itemCount", itemDao.countAll()); }
     catch (RuntimeException ex) { req.setAttribute("itemCount", 0); log("item count failed", ex); }
 
-    // ADMIN numbers (already there)
+   
     try {
       List<Bill> today = billingDao.getTodaySales();
       BigDecimal todaySum = today.stream()
@@ -52,7 +51,7 @@ public class DashboardServlet extends HttpServlet {
       req.setAttribute("todaySales", BigDecimal.ZERO);
     }
 
-    // 👇 STAFF-specific: today sales of current staff user
+ 
     String staffUser = String.valueOf(s.getAttribute("user")); // login username
     try {
       List<Bill> myToday = billingDao.getTodaySalesByStaff(staffUser);
@@ -65,7 +64,7 @@ public class DashboardServlet extends HttpServlet {
       req.setAttribute("staffTodaySales", BigDecimal.ZERO);
     }
 
-    // (optional) legacy
+    //optional
     req.setAttribute("dailySummary", "");
 
     String role = (String) s.getAttribute("role");

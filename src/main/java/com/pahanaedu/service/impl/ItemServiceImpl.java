@@ -40,12 +40,10 @@ public class ItemServiceImpl implements ItemService {
     }
     
     //new
- // src/main/java/com/pahanaedu/service/impl/ItemServiceImpl.java
     @Override
     public List<Item> search(String nameLike, Long id, String category) {
         return dao.search(nameLike, id, category);
     }
-//end new
 
     private void validate(Item i, boolean updating) {
         if (updating && (i.getId() == null)) {

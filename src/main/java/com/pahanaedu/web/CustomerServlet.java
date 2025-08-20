@@ -41,10 +41,10 @@ public class CustomerServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/customers");
 
             } else {
-                // LIST + SEARCH
+                
                 String q = trim(req.getParameter("q"));
                 List<Customer> list = (q != null && !q.isBlank())
-                        ? service.search(q)   // matches ID / phone / account / name
+                        ? service.search(q)   
                         : service.all();
 
                 req.setAttribute("q", q);
@@ -53,7 +53,7 @@ public class CustomerServlet extends HttpServlet {
             }
 
         } catch (Exception ex) {
-            // fallback to list page with error
+    
             req.setAttribute("error", ex.getMessage());
             req.setAttribute("customers", service.all());
             req.getRequestDispatcher("/views/customers/list.jsp").forward(req, resp);
@@ -67,7 +67,7 @@ public class CustomerServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         String idStr   = req.getParameter("id");
-        String account = trim(req.getParameter("accountNumber")); // may be blank (auto-assign)
+        String account = trim(req.getParameter("accountNumber"));
         String name    = trim(req.getParameter("name"));
         String address = trim(req.getParameter("address"));
         String phone   = trim(req.getParameter("phone"));
@@ -82,10 +82,10 @@ public class CustomerServlet extends HttpServlet {
 
         try {
             if (isBlank(idStr)) {
-                // create
-                service.register(c); // will auto-assign account if blank
+               
+                service.register(c); 
             } else {
-                // update
+                
                 Long id = parseId(idStr);
                 if (id == null) throw new IllegalArgumentException("Invalid id.");
                 c.setId(id);
@@ -94,12 +94,12 @@ public class CustomerServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/customers");
 
         } catch (IllegalArgumentException ex) {
-            // show form again with validation error
+            
             req.setAttribute("error", ex.getMessage());
             req.setAttribute("customer", c);
 
             if (isBlank(idStr)) {
-                // user was creating → show next account (or keep typed account if provided)
+                
                 req.setAttribute("nextAcc", (isBlank(account) ? service.nextAccountNumber() : account));
             }
             req.getRequestDispatcher("/views/customers/form.jsp").forward(req, resp);

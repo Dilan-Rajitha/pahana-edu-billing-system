@@ -18,7 +18,7 @@ public class HelpServlet extends HttpServlet {
       return;
     }
 
-    // optional anchor support => /help?topic=billing
+    // optional
     String topic = req.getParameter("topic");
     if (topic != null) req.setAttribute("topic", topic);
 
